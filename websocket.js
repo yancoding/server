@@ -10,10 +10,18 @@ wss.on('connection', ws => {
   // 监听message事件
   ws.on('message', message => {
 		// 广播消息
+    const data = {
+      date: Date.now(),
+      content: message,
+      user: {
+        name: '苍余生',
+        avatar: 'http://img1.imgtn.bdimg.com/it/u=2034740944,4251903193&fm=26&gp=0.jpg',
+      },
+    }
     wss.clients.forEach(client => {
 			if (client != ws && client.readyState === WebSocket.OPEN) {
-				client.send(message)
-			}
+			  client.send(JSON.stringify(data))
+      }
 		})		
 	})
   
