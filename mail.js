@@ -1,14 +1,27 @@
 const nodemailer = require('nodemailer')
-const config = require('./config')
+require('dotenv').config()
+const {
+  MAIL_HOST: host,
+  MAIL_PORT: port,
+  MAIL_USER: user,
+  MAIL_PASS: pass,
+} = process.env
 
 const sendMail = async (mailOptions) => {  
-  const transporter = nodemailer.createTransport(config.mail)
+  const transporter = nodemailer.createTransport({
+    host,
+    port,
+    auth: {
+      user,
+      pass,
+    },
+  })
   
   await transporter.sendMail(mailOptions)
 }
 
 sendMail({
-  from: `raspi server <${config.mail.auth.user}>`,
+  from: `raspi server <${user}>`,
   to: 'yancoding@qq.com',
   subject: 'hello yan',
   text: 'this from raspi',
