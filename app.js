@@ -22,7 +22,7 @@ const app = new Koa()
 const router = new Router()
 
 app
-  .use(KoaStatic('../static'))
+  .use(KoaStatic(process.env.DISK_STATIC_PATH))
   .use(cors())
   .use(bodyParser())
 	.use(index.routes(), index.allowedMethods())

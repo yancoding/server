@@ -15,9 +15,11 @@
     "@koa/router": "^9.0.1",
     "chokidar": "^3.4.1",
     "dotenv": "^8.2.0",
+    "jsmediatags": "^3.9.3",
     "koa": "^2.13.0",
     "koa-bodyparser": "^4.3.0",
     "koa-static": "^5.0.0",
+    "mime": "^2.4.6",
     "nodemailer": "^6.4.10",
     "ws": "^7.3.0"
   },
