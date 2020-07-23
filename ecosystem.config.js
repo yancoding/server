@@ -17,7 +17,7 @@ module.exports = {
 
         // static
         STATIC_PATH: '../static',
-        STATIC_HOST: '127.0.0.1',
+        STATIC_HOST: 'http://127.0.0.1',
       },
     },
     {
@@ -35,7 +35,7 @@ module.exports = {
 
         // static
         STATIC_PATH: '/media',
-        STATIC_HOST: '192.168.1.2',
+        STATIC_HOST: 'http://192.168.1.2',
       },
     },
   ],
