@@ -57,17 +57,12 @@ chokidar.watch(STATIC_PATH)
     }
   })
   .on('unlinkDir', dirPath => {
-    console.log('unlinkdir')
     dirPath = path.relative(STATIC_PATH, dirPath)
     const parentPath = path.dirname(dirPath).split(path.sep).join('/')
     dirPath = dirPath.split(path.sep).join('/')
     delete dir[dirPath]
-    console.log('dirPath: ', dirPath)
-    console.log('dir[parentPath]: ', dir[parentPath])
     for (let i = 0; i < dir[parentPath].length; i++) {
       if (dir[parentPath][i].path === dirPath) {
-        console.log(i)
-        console.log(dir[parentPath])
         dir[parentPath].splice(i, 1)
         break
       }
@@ -82,17 +77,10 @@ router
   })
   .post('/dir', async (ctx, next) => {
     const body = ctx.request.body
-    if (typeof dir[body.dir] === 'undefined') {
-      ctx.body = {
-        success: false,
-        msg: '不存在该目录',
-      }
-    } else {
-      ctx.body = {
-        success: true,
-        data: dir[body.dir] ? [...dir[body.dir]] : [],
-        msg: '获取成功',
-      }
+    ctx.body = {
+      success: true,
+      data: dir[body.dir] ? dir[body.dir] : [],
+      msg: '获取成功',
     }
   })
 
