@@ -7,7 +7,7 @@ const bodyParser = require('koa-bodyparser')
 const KoaStatic = require('koa-static')
 require('dotenv').config()
 
-const { API_PORT: port } = process.env
+const { DEV_PORT: port } = process.env
 
 // 路由
 const index = require('./routes/index')
@@ -22,7 +22,7 @@ const app = new Koa()
 const router = new Router()
 
 app
-  .use(KoaStatic(process.env.DISK_STATIC_PATH))
+  .use(KoaStatic(process.env.DEV_STATIC_PATH))
   .use(cors())
   .use(bodyParser())
 	.use(index.routes(), index.allowedMethods())
