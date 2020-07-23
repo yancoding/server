@@ -15,57 +15,63 @@ let dir = {}
 
 // 监听文件变动
 chokidar.watch(STATIC_PATH)
-  .on('add', p => {
-    p = path.relative(STATIC_PATH, p)
-    const parentPath = path.dirname(p).split(path.sep).join('/')
-    p = p.split(path.sep).join('/')
+  .on('add', filePath => {
+    filePath = path.relative(STATIC_PATH, filePath)
+    const parentPath = path.dirname(filePath).split(path.sep).join('/')
+    filePath = filePath.split(path.sep).join('/')
     if (typeof dir[parentPath] == 'undefined') {
-      dir[parentPath] = new Set()
+      dir[parentPath] = []
     }
-    dir[parentPath].add({
+    dir[parentPath].push({
       type: 'file',
-      mime: mime.getType(path.extname(p)),
-      url: `${STATIC_HOST}:${PORT}/${p}`,
+      mime: mime.getType(path.extname(filePath)),
+      url: `${STATIC_HOST}:${PORT}/${filePath}`,
     })
-    console.log(dir)
-    console.log('--------------------')
   })
-  .on('addDir', p => {
-    p = path.relative(STATIC_PATH, p)
-    if (p == '') {
+  .on('addDir', dirPath => {
+    dirPath = path.relative(STATIC_PATH, dirPath)
+    if (dirPath == '') {
       return
     }
-    const parentPath = path.dirname(p).split(path.sep).join('/')
-    p = p.split(path.sep).join('/')
-    if (typeof dir[p] == 'undefined') {
-      dir[p] = new Set()
+    const parentPath = path.dirname(dirPath).split(path.sep).join('/')
+    dirPath = dirPath.split(path.sep).join('/')
+    if (typeof dir[dirPath] == 'undefined') {
+      dir[dirPath] = []
     }
     if (typeof dir[parentPath] == 'undefined') {
-      dir[parentPath] = new Set()
+      dir[parentPath] = []
     }
-    dir[parentPath].add({
+    dir[parentPath].push({
       type: 'dir',
-      path: p,
+      path: dirPath,
     })
-    console.log(dir)
-    console.log('--------------------')
   })
-  .on('unlink', p => {
-    p = path.relative(STATIC_PATH, p)
-    const parentPath = path.dirname(p).split(path.sep).join('/')
-    p = p.split(path.sep).join('/')
-    dir[parentPath].delete(p)
-    console.log(dir)
-    console.log('--------------------')
+  .on('unlink', filePath => {
+    filePath = path.relative(STATIC_PATH, filePath)
+    const parentPath = path.dirname(filePath).split(path.sep).join('/')
+    filePath = filePath.split(path.sep).join('/')
+    for (let i = 0; i <  dir[parentPath].length; i++) {
+      if (dir[parentPath][i].url === `${STATIC_HOST}:${PORT}/${filePath}`) {
+        dir[parentPath].splice(i, 1)
+      }
+    }
   })
-  .on('unlinkDir', p => {
-    p = path.relative(STATIC_PATH, p)
-    const parentPath = path.dirname(p).split(path.sep).join('/')
-    p = p.split(path.sep).join('/')
-    delete dir[p]
-    dir[parentPath].delete(p)
-    console.log(dir)
-    console.log('--------------------')
+  .on('unlinkDir', dirPath => {
+    console.log('unlinkdir')
+    dirPath = path.relative(STATIC_PATH, dirPath)
+    const parentPath = path.dirname(dirPath).split(path.sep).join('/')
+    dirPath = dirPath.split(path.sep).join('/')
+    delete dir[dirPath]
+    console.log('dirPath: ', dirPath)
+    console.log('dir[parentPath]: ', dir[parentPath])
+    for (let i = 0; i < dir[parentPath].length; i++) {
+      if (dir[parentPath][i].path === dirPath) {
+        console.log(i)
+        console.log(dir[parentPath])
+        dir[parentPath].splice(i, 1)
+        break
+      }
+    }
   })
 
 router.prefix('/disk')

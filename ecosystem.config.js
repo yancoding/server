@@ -13,7 +13,7 @@ module.exports = {
         MAIL_PASS: 'JCSEYJIKQUILXNME',
 
         // port
-        PORT: 8085,
+        PORT: 8081,
 
         // static
         STATIC_PATH: '../static',
