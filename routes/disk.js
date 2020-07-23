@@ -18,6 +18,7 @@ chokidar.watch(STATIC_PATH)
   .on('add', filePath => {
     filePath = path.relative(STATIC_PATH, filePath)
     const parentPath = path.dirname(filePath).split(path.sep).join('/')
+    const fileName = path.basename(filePath)
     filePath = filePath.split(path.sep).join('/')
     if (typeof dir[parentPath] == 'undefined') {
       dir[parentPath] = []
@@ -26,6 +27,7 @@ chokidar.watch(STATIC_PATH)
       type: 'file',
       mime: mime.getType(path.extname(filePath)),
       url: `${STATIC_HOST}:${PORT}/${filePath}`,
+      name: fileName,
     })
   })
   .on('addDir', dirPath => {
