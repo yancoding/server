@@ -4,13 +4,19 @@ const chokidar = require('chokidar')
 const mime = require('mime')
 require('dotenv').config
 
+const {
+  PORT,
+  STATIC_PATH,
+  STATIC_HOST,
+} = process.env
+
 const router = new Router()
 let dir = {}
 
 // 监听文件变动
-chokidar.watch(process.env.DEV_STATIC_PATH)
+chokidar.watch(STATIC_PATH)
   .on('add', p => {
-    p = path.relative(process.env.DEV_STATIC_PATH, p)
+    p = path.relative(STATIC_PATH, p)
     const parentPath = path.dirname(p).split(path.sep).join('/')
     p = p.split(path.sep).join('/')
     if (typeof dir[parentPath] == 'undefined') {
@@ -19,13 +25,13 @@ chokidar.watch(process.env.DEV_STATIC_PATH)
     dir[parentPath].add({
       type: 'file',
       mime: mime.getType(path.extname(p)),
-      url: `http://localhost:${process.env.DEV_PORT}/${p}`,
+      url: `${STATIC_HOST}:${PORT}/${p}`,
     })
     console.log(dir)
     console.log('--------------------')
   })
   .on('addDir', p => {
-    p = path.relative(process.env.DEV_STATIC_PATH, p)
+    p = path.relative(STATIC_PATH, p)
     if (p == '') {
       return
     }
@@ -45,7 +51,7 @@ chokidar.watch(process.env.DEV_STATIC_PATH)
     console.log('--------------------')
   })
   .on('unlink', p => {
-    p = path.relative(process.env.DEV_STATIC_PATH, p)
+    p = path.relative(STATIC_PATH, p)
     const parentPath = path.dirname(p).split(path.sep).join('/')
     p = p.split(path.sep).join('/')
     dir[parentPath].delete(p)
@@ -53,7 +59,7 @@ chokidar.watch(process.env.DEV_STATIC_PATH)
     console.log('--------------------')
   })
   .on('unlinkDir', p => {
-    p = path.relative(process.env.DEV_STATIC_PATH, p)
+    p = path.relative(STATIC_PATH, p)
     const parentPath = path.dirname(p).split(path.sep).join('/')
     p = p.split(path.sep).join('/')
     delete dir[p]
