@@ -94,7 +94,7 @@ router
       }
     } else {
       ctx.body = {
-        success: true,
+        success: false,
         data: null,
         msg: "获取失败, 目录不存在",
       }
