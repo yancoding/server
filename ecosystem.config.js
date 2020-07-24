@@ -4,7 +4,7 @@ module.exports = {
       name: 'server-dev',
       script: './app.js',
       watch: true,
-      ignore_watch: ['node_modules'],
+      log_date_format: '[YYYY-MM-DD HH:mm Z]',
       env: {
         // mail
         MAIL_HOST: 'smtp.163.com',
@@ -13,7 +13,7 @@ module.exports = {
         MAIL_PASS: 'JCSEYJIKQUILXNME',
 
         // port
-        PORT: 8081,
+        PORT: 8088,
 
         // static
         STATIC_PATH: '../static',
@@ -23,6 +23,7 @@ module.exports = {
     {
       name: 'server-prd',
       script: './app.js',
+      log_date_format: '[YYYY-MM-DD HH:mm Z]',
       env: {
         // mail
         MAIL_HOST: 'smtp.163.com',

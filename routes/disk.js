@@ -32,7 +32,8 @@ chokidar.watch(STATIC_PATH)
   })
   .on('addDir', dirPath => {
     dirPath = path.relative(STATIC_PATH, dirPath)
-    if (dirPath == '') {
+    if (dirPath == "" && typeof dir['.'] == "undefined") {
+      dir['.'] = []
       return
     }
     const parentPath = path.dirname(dirPath).split(path.sep).join('/')
@@ -79,10 +80,24 @@ router
   })
   .post('/dir', async (ctx, next) => {
     const body = ctx.request.body
-    ctx.body = {
-      success: true,
-      data: dir[body.dir] ? dir[body.dir] : [],
-      msg: '获取成功',
+    if (typeof body.dir === "undefined") {
+      ctx.body = {
+        success: true,
+        data: dir['.'],
+        msg: "未指定查询参数[dir], 默认返回根目录数据",
+      }
+    } else if (dir[body.dir])  {
+      ctx.body = {
+        success: true,
+        data: dir[body.dir],
+        msg: "获取成功",
+      }
+    } else {
+      ctx.body = {
+        success: true,
+        data: null,
+        msg: "获取失败, 目录不存在",
+      }
     }
   })
 
