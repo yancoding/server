@@ -22,11 +22,20 @@ require('./websocket')
 const app = new Koa()
 
 app
-  .use(KoaStatic(STATIC_PATH))
   .use(cors())
   .use(bodyParser())
-	.use(index.routes(), index.allowedMethods())
-	.use(users.routes(), users.allowedMethods())
-	.use(disk.routes(), disk.allowedMethods())
+  .use(index.routes(), index.allowedMethods())
+  .use(users.routes(), users.allowedMethods())
+  .use(disk.routes(), disk.allowedMethods())
+  .use(async (ctx, next) => {
+    // 拦截
+    console.log(ctx.request.query)
+    if (ctx.request.query.session === '123') {
+      await next()
+    } else {
+      return
+    }
+  })
+  .use(KoaStatic(STATIC_PATH))
 // 监听端口
 app.listen(PORT)
