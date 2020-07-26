@@ -13,9 +13,11 @@
   "dependencies": {
     "@koa/cors": "^3.1.0",
     "@koa/router": "^9.0.1",
+    "bcryptjs": "^2.4.3",
     "chokidar": "^3.4.1",
     "dotenv": "^8.2.0",
     "jsmediatags": "^3.9.3",
+    "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.0",
     "koa-bodyparser": "^4.3.0",
     "koa-static": "^5.0.0",
