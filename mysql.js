@@ -4,7 +4,7 @@ let connection
 mysql.createConnection({
   user: "root",
   password: "mysql@123",
-  database: "mysql",
+  database: "raspi",
 })
   .then(conn => {
     console.log('mysql connect success')
