@@ -1,8 +1,11 @@
+const http = require('http')
 const WebSocket = require('ws')
+
+const server = http.createServer()
 
 // 创建服务
 const wss = new WebSocket.Server({
-	port: 3000,
+  server,
 })
 
 wss.on('connection', ws => {
@@ -50,3 +53,5 @@ const interval = setInterval(() => {
 wss.on('close', () => {
   clearInterval(interval)
 })
+
+module.exports = server

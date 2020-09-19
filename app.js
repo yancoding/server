@@ -2,11 +2,11 @@ const Koa = require('koa')
 const cors = require('@koa/cors')
 const bodyParser = require('koa-bodyparser')
 const KoaStatic = require('koa-static')
-require('./websocket.js')
 require('dotenv').config()
 
 const {
-  PORT,
+  API_PORT,
+  WS_PORT,
   STATIC_PATH,
 } = process.env
 
@@ -16,7 +16,7 @@ const users = require('./routes/users')
 const disk = require('./routes/disk')
 
 // ws服务
-require('./websocket')
+require('./websocket.js').listen(WS_PORT)
 
 // 创建实例
 const app = new Koa()
@@ -38,4 +38,4 @@ app
   // })
   .use(KoaStatic(STATIC_PATH))
 // 监听端口
-app.listen(PORT)
+app.listen(API_PORT)

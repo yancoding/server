@@ -3,7 +3,7 @@ module.exports = {
     {
       name: 'server',
       script: './app.js',
-      log_date_format: '[YYYY-MM-DD HH:mm Z]',
+      log_date_format: 'YYYY-MM-DD HH:mm Z',
       env: {
         // mail
         MAIL_HOST: 'smtp.163.com',
@@ -12,11 +12,12 @@ module.exports = {
         MAIL_PASS: 'JCSEYJIKQUILXNME',
 
         // port
-        PORT: 4000,
+        API_PORT: 4000,
+        WS_PORT: 3000,
 
         // static
         STATIC_PATH: '/media',
-        STATIC_HOST: 'http://192.168.1.2',
+        STATIC_HOST: 'http://192.168.3.3',
       },
     },
   ],
