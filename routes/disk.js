@@ -6,7 +6,7 @@ require('dotenv').config
 const conn = require('../mysql.js')
 
 const {
-  PORT,
+  API_PORT: PORT,
   STATIC_PATH,
   STATIC_HOST,
 } = process.env
@@ -48,6 +48,7 @@ chokidar.watch(STATIC_PATH)
     dir[parentPath].push({
       type: 'dir',
       path: dirPath,
+      name: dirPath.split('/').pop()
     })
   })
   .on('unlink', filePath => {
