@@ -28,6 +28,7 @@ module.exports = {
       ref: 'origin/dev',
       repo: 'git@github.com:yancoding/server.git',
       path: '~/www/server',
+      'post-deploy': 'cnpm install & pm2 startOrRestart ecosystem.config.js --env production',
       env: {
         NODE_ENV: 'production',
       },
