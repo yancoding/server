@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "nodemon app.js",
     "prd": "pm2 start ecosystem.config.js --only server",
+    "setup": "pm2 deploy ecosystem.config.js production setup",
+    "deploy": "pm2 deploy ecosystem.config.js production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

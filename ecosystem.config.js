@@ -21,4 +21,16 @@ module.exports = {
       },
     },
   ],
+  deploy: {
+    production: {
+      user: 'pi',
+      host: '192.168.3.3',
+      ref: 'origin/dev',
+      repo: 'git@github.com:yancoding/server.git',
+      path: '~/www/server',
+      env: {
+        NODE_ENV: 'production',
+      },
+    }
+  },
 };
