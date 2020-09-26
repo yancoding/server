@@ -17,8 +17,9 @@ wss.on('connection', ws => {
       date: Date.now(),
       content: message,
       user: {
+        id: 2,
         name: '苍余生',
-        avatar: 'http://img1.imgtn.bdimg.com/it/u=2034740944,4251903193&fm=26&gp=0.jpg',
+        avatar: 'https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1354268575,1268995723&fm=26&gp=0.jpg',
       },
     }
     wss.clients.forEach(client => {
