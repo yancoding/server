@@ -14,6 +14,7 @@ const {
 const index = require('./routes/index')
 const users = require('./routes/users')
 const disk = require('./routes/disk')
+const register = require('./routes/register')
 
 // ws服务
 require('./websocket.js').listen(WS_PORT)
@@ -27,6 +28,7 @@ app
   .use(index.routes(), index.allowedMethods())
   .use(users.routes(), users.allowedMethods())
   .use(disk.routes(), disk.allowedMethods())
+  .use(register.routes(), register.allowedMethods())
   // .use(async (ctx, next) => {
   //   // 拦截
   //   console.log(ctx.request.query)

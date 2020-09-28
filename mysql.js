@@ -1,15 +1,25 @@
-const mysql = require("mysql2/promise")
+const mysql = require('mysql2')
 
-let connection
-mysql.createConnection({
-  user: "root",
-  password: "mysql@123",
-  database: "mysql",
+const pool = mysql.createPool({
+  user: 'root',
+  password: 'mysql@123',
+  database: 'raspi',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
 })
-  .then(conn => {
-    console.log('mysql connect success')
-    connection = conn
+
+const query = (sql, values) => {
+  return new Promise((resolve, reject) => {
+    pool.query(sql, values, (err, rows, fields) => {
+      if (err) {
+        console.log('数据库操作失败！')
+        reject(err)
+      } else {
+        resolve(rows)
+      }
+    })
   })
-  .catch(err => console.log('数据库连接失败！！！'))
+}
   
-  module.exports = connection
+module.exports = { query }

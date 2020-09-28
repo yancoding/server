@@ -3,7 +3,6 @@ const path = require('path')
 const chokidar = require('chokidar')
 const mime = require('mime')
 require('dotenv').config
-const conn = require('../mysql.js')
 
 const {
   API_PORT: PORT,
