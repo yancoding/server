@@ -43,7 +43,7 @@ router
           password: hash,
           salt,
       }
-      await db.collection('user').insertOne(user)
+      // await db.collection('user').insertOne(user)
       const payload = {
           username
       }
@@ -56,7 +56,8 @@ router
         },
         msg: '注册成功',
       }
-    } catch (error) {
+    } catch (err) {
+      console.log(err)
       ctx.body = {
         success: false,
         data: null,
