@@ -1,5 +1,6 @@
 const mysql = require('mysql2')
 
+// 创建连接池
 const pool = mysql.createPool({
   user: 'root',
   password: 'mysql@123',
@@ -21,5 +22,18 @@ const query = (sql, values) => {
     })
   })
 }
+
+const execute = (sql, values) => {
+  return new Promise((resolve, reject) => {
+    pool.execute(sql, values, (err, rows, fields) => {
+      if (err) {
+        console.log('数据库操作失败！')
+        reject(err)
+      } else {
+        resolve(rows)
+      }
+    })
+  })
+}
   
-module.exports = { query }
+module.exports = { query, execute }
