@@ -1,7 +1,7 @@
 const Router = require('@koa/router')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const { query } = require('../mysql')
+const { query, execute } = require('../mysql')
 const router = new Router()
 
 router.prefix('/register')
@@ -38,12 +38,8 @@ router
     try {
       const _salt = await bcrypt.genSalt(0)
       let hash = await bcrypt.hash(password, _salt)
-      user = {
-          username,
-          password: hash,
-          salt,
-      }
-      // await db.collection('user').insertOne(user)
+      const sql = 'INSERT IGNORE INTO `user` SET username=?, password=?, salt=?'
+      await execute(sql, [username, hash, salt])
       const payload = {
           username
       }
