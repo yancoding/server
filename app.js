@@ -26,7 +26,7 @@ const app = new Koa()
 app
   .use(cors())
   .use(bodyParser())
-  .use(index.routes(), index.allowedMethods())
+  // .use(index.routes(), index.allowedMethods())
   .use(users.routes(), users.allowedMethods())
   .use(disk.routes(), disk.allowedMethods())
   .use(register.routes(), register.allowedMethods())
