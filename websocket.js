@@ -1,14 +1,17 @@
 const http = require('http')
 const WebSocket = require('ws')
+const qs = require('qs')
+const jwt = require('jsonwebtoken')
 
 const server = http.createServer()
 
 // 创建服务
 const wss = new WebSocket.Server({
-  server,
+  noServer: true,
 })
 
-wss.on('connection', ws => {
+wss.on('connection', (ws, req) => {
+  console.log(req.headers.query)
   ws.isAlive = true
   // 监听message事件
   ws.on('message', message => {
@@ -32,6 +35,22 @@ wss.on('connection', ws => {
   // 监听pong事件
   ws.on('pong', () => {
     ws.isAlive = true
+  })
+})
+
+server.on('upgrade', async (req, socket, head) => {
+  const queryString = req.url.split('?').pop()
+  const { token } = qs.parse(queryString)
+  try {
+    const { username } = await jwt.verify(token.split(' ').pop(), 'my secret')
+  } catch (error) {
+    socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
+    socket.destroy()
+    return
+  }
+
+  wss.handleUpgrade(req, socket, head, ws => {
+    wss.emit('connection', ws, req)
   })
 })
 

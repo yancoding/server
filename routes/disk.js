@@ -80,6 +80,14 @@ router
     ctx.body = 'disk'
   })
   .post('/dir', async (ctx, next) => {
+    if (!ctx.state.username) {
+      ctx.body = {
+        success: false,
+        code: 1,
+        msg: '无权限',
+      }
+      return 
+    } 
     const body = ctx.request.body
     if (typeof body.dir === "undefined") {
       ctx.body = {
@@ -96,7 +104,7 @@ router
     } else {
       ctx.body = {
         success: false,
-        data: null,
+        code: 2,
         msg: "获取失败, 目录不存在",
       }
     }

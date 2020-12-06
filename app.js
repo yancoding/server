@@ -2,6 +2,7 @@ const Koa = require('koa')
 const cors = require('@koa/cors')
 const bodyParser = require('koa-bodyparser')
 const KoaStatic = require('koa-static')
+const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
 const {
@@ -27,19 +28,18 @@ app
   .use(cors())
   .use(bodyParser())
   // .use(index.routes(), index.allowedMethods())
+  .use(async (ctx, next) => {
+    let token = ctx.headers.authorization || ''
+    try {
+      const { username } = await jwt.verify(token.split(' ').pop(), 'my secret')
+      ctx.state.username = username
+    } catch (error) {}
+    await next()
+  })
   .use(users.routes(), users.allowedMethods())
   .use(disk.routes(), disk.allowedMethods())
   .use(register.routes(), register.allowedMethods())
   .use(login.routes(), login.allowedMethods())
-  // .use(async (ctx, next) => {
-  //   // 拦截
-  //   console.log(ctx.request.query)
-  //   if (ctx.request.query.session === '123') {
-  //     await next()
-  //   } else {
-  //     return
-  //   }
-  // })
   .use(KoaStatic(STATIC_PATH))
 // 监听端口
 app.listen(API_PORT)
