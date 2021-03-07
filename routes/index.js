@@ -18,7 +18,7 @@ router
   .post('/upload', koaBody({
     multipart: true,
     formidable: {
-      uploadDir: path.join(process.cwd(), process.env.STATIC_PATH, './upload'),
+      uploadDir: path.join(process.env.STATIC_PATH, './upload'),
       keepExtensions: true,
       maxFieldsSize: 0,
       onFileBegin(name, file) {
