@@ -1,6 +1,6 @@
 const Koa = require('koa')
 const cors = require('@koa/cors')
-const bodyParser = require('koa-bodyparser')
+const koaBody = require('koa-body')
 const KoaStatic = require('koa-static')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
@@ -26,8 +26,7 @@ const app = new Koa()
 
 app
   .use(cors())
-  .use(bodyParser())
-  // .use(index.routes(), index.allowedMethods())
+  .use(koaBody())
   .use(async (ctx, next) => {
     let token = ctx.headers.authorization || ''
     try {
@@ -36,6 +35,7 @@ app
     } catch (error) {}
     await next()
   })
+  .use(index.routes(), index.allowedMethods())
   .use(users.routes(), users.allowedMethods())
   .use(disk.routes(), disk.allowedMethods())
   .use(register.routes(), register.allowedMethods())

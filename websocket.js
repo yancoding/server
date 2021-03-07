@@ -11,7 +11,6 @@ const wss = new WebSocket.Server({
 })
 
 wss.on('connection', (ws, req) => {
-  console.log(req.headers.query)
   ws.isAlive = true
   // 监听message事件
   ws.on('message', message => {

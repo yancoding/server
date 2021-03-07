@@ -17,16 +17,16 @@ module.exports = {
 
         // static
         STATIC_PATH: '/media',
-        STATIC_HOST: 'http://192.168.3.3',
+        STATIC_HOST: 'http://39.106.154.181',
       },
     },
   ],
   deploy: {
     production: {
-      user: 'pi',
-      host: '192.168.3.3',
+      user: 'root',
+      host: '39.106.154.181',
       ref: 'origin/dev',
-      repo: 'git@github.com:yancoding/server.git',
+      repo: 'https://github.com/yancoding/server.git',
       path: '~/www/server',
       'post-deploy': 'cnpm install & pm2 startOrRestart ecosystem.config.js --env production',
       env: {

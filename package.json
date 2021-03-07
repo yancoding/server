@@ -21,7 +21,7 @@
     "jsmediatags": "^3.9.3",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.0",
-    "koa-bodyparser": "^4.3.0",
+    "koa-body": "^4.2.0",
     "koa-static": "^5.0.0",
     "mime": "^2.4.6",
     "mysql2": "^2.1.0",
