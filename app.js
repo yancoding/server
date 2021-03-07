@@ -32,7 +32,9 @@ app
     try {
       const { username } = await jwt.verify(token.split(' ').pop(), 'my secret')
       ctx.state.username = username
-    } catch (error) {}
+    } catch (error) {
+      console.log('未登录')
+    }
     await next()
   })
   .use(index.routes(), index.allowedMethods())

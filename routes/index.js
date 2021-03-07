@@ -30,7 +30,7 @@ router
     ctx.body = {
       success: true,
       data: {
-        url,
+        // url,
       },
       msg: '上传成功',
     }
