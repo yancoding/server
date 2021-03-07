@@ -16,7 +16,7 @@ module.exports = {
         WS_PORT: 3000,
 
         // static
-        STATIC_PATH: '/media',
+        STATIC_PATH: '/root/www/static',
         STATIC_HOST: 'http://39.106.154.181',
       },
     },
