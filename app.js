@@ -3,6 +3,7 @@ const cors = require('@koa/cors')
 const koaBody = require('koa-body')
 const KoaStatic = require('koa-static')
 const jwt = require('jsonwebtoken')
+const { query, execute } = require('./mysql')
 require('dotenv').config()
 
 const {
@@ -24,16 +25,28 @@ require('./websocket.js').listen(WS_PORT)
 // 创建实例
 const app = new Koa()
 
+const getUserinfo = async token => {
+  let userinfo = null
+  try {
+    let { username } = await jwt.verify(token, 'my secret')
+    const rows = await query('SELECT * FROM `user` WHERE `username` = ?', [username])
+    const { id, sex } = rows[0]
+    userinfo = { id, username, sex }
+  } catch (error) {}
+  return userinfo
+}
+
 app
   .use(cors())
   .use(koaBody())
   .use(async (ctx, next) => {
     let token = ctx.headers.authorization || ''
-    try {
-      const { username } = await jwt.verify(token.split(' ').pop(), 'my secret')
-      ctx.state.username = username
-    } catch (error) {
-      console.log('未登录')
+    const userinfo = await getUserinfo(token.split(' ').pop())
+    if (userinfo) {
+      ctx.state.userinfo = userinfo
+      console.log(userinfo)
+    } else {
+      console.log('api: 未登录')
     }
     await next()
   })
@@ -42,6 +55,6 @@ app
   .use(disk.routes(), disk.allowedMethods())
   .use(register.routes(), register.allowedMethods())
   .use(login.routes(), login.allowedMethods())
-  .use(KoaStatic(STATIC_PATH))
+  // .use(KoaStatic(STATIC_PATH))
 // 监听端口
 app.listen(API_PORT)

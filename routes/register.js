@@ -60,7 +60,7 @@ router
         username
       }
       const secret = 'my secret'
-      const token = jwt.sign(payload, secret, { expiresIn: '1h' })
+      const token = jwt.sign(payload, secret, { expiresIn: '2h' })
       ctx.body = {
         success: true,
         data: {

@@ -2,6 +2,7 @@ const http = require('http')
 const WebSocket = require('ws')
 const qs = require('qs')
 const jwt = require('jsonwebtoken')
+const { query, execute } = require('./mysql')
 
 const server = http.createServer()
 
@@ -10,39 +11,119 @@ const wss = new WebSocket.Server({
   noServer: true,
 })
 
-wss.on('connection', (ws, req) => {
+let roomMap = new Map()
+let roomId = 0
+
+// 广播
+const broadcast = data => {
+  wss.clients.forEach(client => {
+    if (client.readyState === WebSocket. OPEN) {
+      client.send(JSON.stringify(data))
+    }
+  })
+}
+
+// 群发
+const send = (data, ids) => {
+  console.log({ data, ids })
+  wss.clients.forEach(client => {
+    console.log(client.user.id)
+    if (
+      client.readyState === WebSocket.OPEN &&
+      ids.includes(client.user.id)
+    ) {
+      client.send(JSON.stringify(data))
+    }
+  })
+}
+
+const broadcastOnlineUsers = () => {
+  let users = []
+  wss.clients.forEach(client => users.push(client.user))
+  broadcast({
+    type: 'online',
+    content: users,
+  })
+}
+// 处理连接事件
+const handleConnection = (ws, req) => {
+  const { user } = req
+  ws.user = user
+  ws.together = {
+    users: [],
+    status: false,
+  }
   ws.isAlive = true
+
+  broadcastOnlineUsers()
+
   // 监听message事件
   ws.on('message', message => {
-		// 广播消息
-    const data = {
-      date: Date.now(),
-      content: message,
-      user: {
-        id: 2,
-        name: '苍余生',
-        avatar: 'https://dss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1354268575,1268995723&fm=26&gp=0.jpg',
-      },
+    message = JSON.parse(message)
+    console.log(ws.user, message)
+    console.log(roomMap.get(ws.roomId))
+    switch(message.type) {
+      case 'invite':
+        roomId++
+        roomMap.set(roomId, [ ws.user.id ])
+        ws.roomId = roomId
+        send({
+          type: message.type,
+          from: ws.user,
+          roomId,
+          video: message.content.video,
+        }, [ message.content.userId ])
+        break
+      case 'acceptInvite':
+        console.log('users1: ', roomMap.get(message.roomId))
+        let users = roomMap.get(message.roomId)
+        users.push(message.user.id)
+        console.log('users: ', users)
+        roomMap.set(message.roomId, users)
+        ws.roomId = message.roomId
+        break
+      case 'sync':
+        if (ws.roomId && roomMap.get(ws.roomId).length > 1) {
+          send(message, roomMap.get(ws.roomId).filter(id => id != ws.user.id))
+        }
+        break
     }
-    wss.clients.forEach(client => {
-			if (client != ws && client.readyState === WebSocket.OPEN) {
-			  client.send(JSON.stringify(data))
-      }
-		})		
 	})
   
   // 监听pong事件
   ws.on('pong', () => {
     ws.isAlive = true
   })
-})
 
-server.on('upgrade', async (req, socket, head) => {
+  // 连接关闭
+  ws.on('close', () => {
+    broadcastOnlineUsers()
+  })
+}
+
+const getUserinfo = async token => {
+  let userinfo = null
+  try {
+    let { username } = await jwt.verify(token, 'my secret')
+    const rows = await query('SELECT * FROM `user` WHERE `username` = ?', [username])
+    const { id, sex } = rows[0]
+    userinfo = { id, username, sex }
+  } catch (error) {
+  }
+  return userinfo
+}
+
+// 处理upgrade事件
+const handleUpgrade = async (req, socket, head) => {
   const queryString = req.url.split('?').pop()
   const { token } = qs.parse(queryString)
-  try {
-    const { username } = await jwt.verify(token.split(' ').pop(), 'my secret')
-  } catch (error) {
+
+  const userinfo = await getUserinfo(token.split(' ').pop())
+  if (userinfo) {
+    req.user = userinfo
+
+  } else {
+    console.log('ws: 未登录')
     socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
     socket.destroy()
     return
@@ -51,9 +132,13 @@ server.on('upgrade', async (req, socket, head) => {
   wss.handleUpgrade(req, socket, head, ws => {
     wss.emit('connection', ws, req)
   })
-})
+}
 
-// 心跳定时器（30s）
+server.on('upgrade', handleUpgrade)
+
+wss.on('connection', handleConnection)
+
+// 心跳定时器（30s）（异常中断）
 const interval = setInterval(() => {
   // 遍历所有连接
   wss.clients.forEach(ws => {
@@ -64,9 +149,10 @@ const interval = setInterval(() => {
       ws.ping()
     } else {
       ws.terminate()
+      broadcastOnlineUsers()
     }
   })
-}, 30000)
+}, 30 * 1000)
 
 // 服务关闭时，清除心跳定时器
 wss.on('close', () => {

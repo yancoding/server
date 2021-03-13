@@ -16,8 +16,15 @@ module.exports = {
         WS_PORT: 3000,
 
         // static
-        STATIC_PATH: '/root/www/static',
+        STATIC_PATH: '/usr/share/nginx/static',
         STATIC_HOST: 'http://39.106.154.181',
+
+        // upload
+        UPLOAD_PATH = '/usr/share/nginx/static/upload',
+
+        // nginx
+        NGINX_HOST = 'http://39.106.154.181',
+        NGINX_PORT = 8080,
       },
     },
   ],

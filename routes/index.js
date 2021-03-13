@@ -4,12 +4,31 @@ const jwt = require('jsonwebtoken')
 const koaBody = require('koa-body')
 const path = require('path')
 const router = new Router()
+const { query, execute } = require('../mysql')
 let userList = ['yan']
+
+const {
+  UPLOAD_PATH,
+  NGINX_HOST,
+  NGINX_PORT,
+} = process.env
+
 router
-  .get('/', async (ctx, next) => {
+  .post('/', async (ctx, next) => {
+    const { id } = ctx.state.userinfo
+    const rows = await query('SELECT * FROM `file` WHERE `user_id` = ?', [id])
+    let data = rows.map(file => {
+      return {
+        id: file.id,
+        name: file.name,
+        url: `${NGINX_HOST}:${NGINX_PORT}/upload/${path.basename(file.path)}`,
+        type: file.ext_name,
+      }
+    })
     ctx.body = {
-      name: 'yan',
-      age: 3,
+      success: true,
+      data,
+      msg: '获取成功',
     }
   })
   .get('/string', async (ctx, next) => {
@@ -18,19 +37,23 @@ router
   .post('/upload', koaBody({
     multipart: true,
     formidable: {
-      uploadDir: path.join(process.env.STATIC_PATH, './upload'),
+      uploadDir: path.join(UPLOAD_PATH),
       keepExtensions: true,
       maxFieldsSize: 0,
       onFileBegin(name, file) {
-        console.log({ name, file })
+        // console.log({ name, file })
       },
     },
   }), async (ctx, next) => {
-    console.log(ctx.request.files.file)
+    // console.log(ctx.request.files.file)
+    const { size, path: filePath, name, type, lastModifiedDate } = ctx.request.files.file
+    const { id: userid } = ctx.state.userinfo
+    const sql = 'INSERT IGNORE INTO `file` SET name=?, ext_name=?, path=?, user_id=?'
+    await execute(sql, [ name, type, path.basename(filePath), userid ])
     ctx.body = {
       success: true,
       data: {
-        // url,
+        url: `${NGINX_HOST}:${NGINX_PORT}/upload/${path.basename(filePath)}`,
       },
       msg: '上传成功',
     }

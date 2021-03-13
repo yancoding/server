@@ -5,9 +5,9 @@ const mime = require('mime')
 require('dotenv').config
 
 const {
-  API_PORT: PORT,
   STATIC_PATH,
-  STATIC_HOST,
+  NGINX_HOST,
+  NGINX_PORT,
 } = process.env
 
 const router = new Router()
@@ -26,7 +26,7 @@ chokidar.watch(STATIC_PATH)
     dir[parentPath].push({
       type: 'file',
       mime: mime.getType(path.extname(filePath)),
-      url: `${STATIC_HOST}:${PORT}/${filePath}`,
+      url: `${NGINX_HOST}:${NGINX_PORT}/${filePath}`,
       name: fileName,
     })
   })
@@ -55,7 +55,7 @@ chokidar.watch(STATIC_PATH)
     const parentPath = path.dirname(filePath).split(path.sep).join('/')
     filePath = filePath.split(path.sep).join('/')
     for (let i = 0; i <  dir[parentPath].length; i++) {
-      if (dir[parentPath][i].url === `${STATIC_HOST}:${PORT}/${filePath}`) {
+      if (dir[parentPath][i].url === `${NGINX_HOST}:${NGINX_PORT}/${filePath}`) {
         dir[parentPath].splice(i, 1)
       }
     }
@@ -80,7 +80,7 @@ router
     ctx.body = 'disk'
   })
   .post('/dir', async (ctx, next) => {
-    if (!ctx.state.username) {
+    if (!ctx.state.userinfo) {
       ctx.body = {
         success: false,
         code: 1,
