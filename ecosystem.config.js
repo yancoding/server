@@ -20,11 +20,11 @@ module.exports = {
         STATIC_HOST: 'http://39.106.154.181',
 
         // upload
-        UPLOAD_PATH = '/usr/share/nginx/static/upload',
+        UPLOAD_PATH: '/usr/share/nginx/static/upload',
 
         // nginx
-        NGINX_HOST = 'http://39.106.154.181',
-        NGINX_PORT = 8080,
+        NGINX_HOST: 'http://39.106.154.181',
+        NGINX_PORT: 8080,
       },
     },
   ],
