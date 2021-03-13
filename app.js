@@ -44,7 +44,7 @@ app
     const userinfo = await getUserinfo(token.split(' ').pop())
     if (userinfo) {
       ctx.state.userinfo = userinfo
-      console.log(userinfo)
+      console.log('api login: ', userinfo)
     } else {
       console.log('api: 未登录')
     }

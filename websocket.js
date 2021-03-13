@@ -121,7 +121,7 @@ const handleUpgrade = async (req, socket, head) => {
   const userinfo = await getUserinfo(token.split(' ').pop())
   if (userinfo) {
     req.user = userinfo
-
+    console.log('ws login: ', userinfo)
   } else {
     console.log('ws: 未登录')
     socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
