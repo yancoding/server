@@ -36,11 +36,15 @@ router
   })
   .post('/upload', koaBody({
     multipart: true,
+    onError(err) {
+      console.log('koa body error: ', err)
+    },
     formidable: {
       uploadDir: path.join(UPLOAD_PATH),
       keepExtensions: true,
       maxFieldsSize: 0,
       onFileBegin(name, file) {
+        console.log(`上传目录：${path.join(UPLOAD_PATH)}`)
         // console.log({ name, file })
       },
     },
