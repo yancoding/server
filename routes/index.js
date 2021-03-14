@@ -47,6 +47,7 @@ router
         console.log(`上传目录：${path.join(UPLOAD_PATH)}`)
         // console.log({ name, file })
       },
+      maxFileSize: 500 * 1024 * 1024,
     },
   }), async (ctx, next) => {
     // console.log(ctx.request.files.file)

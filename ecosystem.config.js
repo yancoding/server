@@ -15,6 +15,9 @@ module.exports = {
         API_PORT: 4000,
         WS_PORT: 3000,
 
+        // token
+        TOKEN_EXPIRES: '2d',
+
         // static
         STATIC_PATH: '/usr/share/nginx/static',
         STATIC_HOST: 'http://39.106.154.181',

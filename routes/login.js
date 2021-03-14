@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken')
 const { query, execute } = require('../mysql')
 const router = new Router()
 
+const { TOKEN_EXPIRES } = process.env
+
 router.prefix('/login')
 
 router
@@ -40,7 +42,7 @@ router
             username
           }
           const secret = 'my secret'
-          const token = jwt.sign(payload, secret, { expiresIn: '2h' })
+          const token = jwt.sign(payload, secret, { expiresIn: TOKEN_EXPIRES })
           ctx.body = {
             success: true,
             data: {
