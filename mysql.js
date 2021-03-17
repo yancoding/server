@@ -27,7 +27,7 @@ const execute = (sql, values) => {
   return new Promise((resolve, reject) => {
     pool.execute(sql, values, (err, rows, fields) => {
       if (err) {
-        console.log('数据库操作失败！')
+        console.log('数据库操作失败！', err)
         reject(err)
       } else {
         resolve(rows)

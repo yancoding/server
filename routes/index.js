@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const koaBody = require('koa-body')
 const path = require('path')
+const { promises: fsPromises } = require('fs')
 const router = new Router()
 const { query, execute } = require('../mysql')
 let userList = ['yan']
@@ -61,6 +62,25 @@ router
         url: `${NGINX_HOST}:${NGINX_PORT}/upload/${path.basename(filePath)}`,
       },
       msg: '上传成功',
+    }
+  })
+  .post('/delete', async (ctx, next) => {
+    const { id: fileId } = ctx.request.body
+    const [ file ] = await execute('SELECT path FROM `file` WHERE id=?', [ fileId ])
+    try {
+      await fsPromises.unlink(path.join(UPLOAD_PATH, file.path))
+      await execute('DELETE FROM `file` WHERE id=?', [ fileId ])
+    } catch (error) {
+      ctx.body = {
+        success: false,
+        data: {},
+        msg: '删除失败',
+      }
+    }
+    ctx.body = {
+      success: true,
+      data: {},
+      msg: '删除成功',
     }
   })
 
