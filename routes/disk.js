@@ -1,7 +1,9 @@
 const Router = require('@koa/router')
 const path = require('path')
+const fs = require('fs')
 const chokidar = require('chokidar')
 const mime = require('mime')
+const { fstatSync } = require('fs')
 require('dotenv').config
 
 const {
@@ -16,6 +18,10 @@ let dir = {}
 // 监听文件变动
 chokidar.watch(STATIC_PATH)
   .on('add', filePath => {
+    let stat = {}
+    try {
+      stat = fs.statSync(filePath)
+    } catch (error) {}
     filePath = path.relative(STATIC_PATH, filePath)
     const parentPath = path.dirname(filePath).split(path.sep).join('/')
     const fileName = path.basename(filePath)
@@ -26,6 +32,7 @@ chokidar.watch(STATIC_PATH)
     dir[parentPath].push({
       type: 'file',
       mime: mime.getType(path.extname(filePath)),
+      size: stat.size,
       url: `${NGINX_HOST}:${NGINX_PORT}/${filePath}`,
       name: fileName,
     })
