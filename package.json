@@ -18,6 +18,8 @@
     "bcryptjs": "^2.4.3",
     "chokidar": "^3.4.1",
     "dotenv": "^8.2.0",
+    "ffmpeg-static": "^4.2.8",
+    "ffprobe-static": "^3.0.0",
     "fluent-ffmpeg": "^2.1.2",
     "jsmediatags": "^3.9.3",
     "jsonwebtoken": "^8.5.1",
