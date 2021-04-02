@@ -1,18 +1,12 @@
-const Router = require('@koa/router')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { query, execute } = require('../mysql')
-const router = new Router()
 
 const { TOKEN_EXPIRES } = process.env
 
-router.prefix('/register')
-
-router
-  .get('/', async (ctx, next) => {
-    ctx.body = '注册api'
-  })
-  .post('/', async (ctx, next) => {
+class RegisterController {
+  // 用户注册
+  static async register(ctx, next) {
     const { username, password } = ctx.request.body
 
     // 检查参数
@@ -78,6 +72,7 @@ router
         msg: '未知错误，请重试',
       }
     }
-  })
+  }
+}
 
-module.exports = router
+module.exports = RegisterController

@@ -1,26 +1,20 @@
 const Koa = require('koa')
 const cors = require('@koa/cors')
 const koaBody = require('koa-body')
-const KoaStatic = require('koa-static')
 const jwt = require('jsonwebtoken')
-const { query, execute } = require('./mysql')
+const { query, execute } = require('./src/mysql')
 require('dotenv').config()
 
 const {
   API_PORT,
   WS_PORT,
-  STATIC_PATH,
 } = process.env
 
 // 路由
-const index = require('./routes/index')
-const users = require('./routes/users')
-const disk = require('./routes/disk')
-const register = require('./routes/register')
-const login = require('./routes/login')
+const router = require('./src/router')
 
 // ws服务
-require('./websocket.js').listen(WS_PORT)
+require('./src/websocket.js').listen(WS_PORT)
 
 // 创建实例
 const app = new Koa()
@@ -50,11 +44,6 @@ app
     }
     await next()
   })
-  .use(index.routes(), index.allowedMethods())
-  .use(users.routes(), users.allowedMethods())
-  .use(disk.routes(), disk.allowedMethods())
-  .use(register.routes(), register.allowedMethods())
-  .use(login.routes(), login.allowedMethods())
-  // .use(KoaStatic(STATIC_PATH))
+  .use(router.routes(), router.allowedMethods())
 // 监听端口
 app.listen(API_PORT)

@@ -1,19 +1,42 @@
-const Router = require('@koa/router')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { query, execute } = require('../mysql')
-const router = new Router()
 
 const { TOKEN_EXPIRES } = process.env
 
-router.prefix('/login')
+class LoginController {
+  // 获取盐值
+  static async salt(ctx, next) {
+    const { username } = ctx.request.body
+    if (username === undefined) {
+      ctx.body = {
+        success: false,
+        code: 1,
+        msg: '未指定查询参数[username]',
+      }
+    } else {
+      const sql = 'SELECT `salt` FROM `user` WHERE `username`=?'
+      const rows = await execute(sql, [username])
+      if (rows.length === 0) {
+        ctx.body = {
+          success: false,
+          code: 2,
+          msg: '用户不存在'
+        }
+      } else {
+        ctx.body = {
+          success: true,
+          data: {
+            salt: rows[0].salt
+          },
+          msg: '查询成功',
+        }
+      }
+    }
+  }
 
-router
-  .get('/', async (ctx, next) => {
-    ctx.body = '登录api'
-  })
-  // 登录接口
-  .post('/', async (ctx, next) => {
+  // 登录
+  static async login(ctx, next) {
     const { username, password } = ctx.request.body
 
     if (
@@ -58,35 +81,7 @@ router
         }
       }
     }
-  })
-  // 查询salt
-  .post('/salt', async (ctx, next) => {
-    const { username } = ctx.request.body
-    if (username === undefined) {
-      ctx.body = {
-        success: false,
-        code: 1,
-        msg: '未指定查询参数[username]',
-      }
-    } else {
-      const sql = 'SELECT `salt` FROM `user` WHERE `username`=?'
-      const rows = await execute(sql, [username])
-      if (rows.length === 0) {
-        ctx.body = {
-          success: false,
-          code: 2,
-          msg: '用户不存在'
-        }
-      } else {
-        ctx.body = {
-          success: true,
-          data: {
-            salt: rows[0].salt
-          },
-          msg: '查询成功',
-        }
-      }
-    }
-  })
+  }
+}
 
-module.exports = router
+module.exports = LoginController

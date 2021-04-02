@@ -1,9 +1,7 @@
-const Router = require('@koa/router')
 const path = require('path')
 const fs = require('fs')
 const chokidar = require('chokidar')
 const mime = require('mime')
-const { fstatSync } = require('fs')
 require('dotenv').config
 
 const {
@@ -12,7 +10,6 @@ const {
   NGINX_PORT,
 } = process.env
 
-const router = new Router()
 let dir = {}
 
 // 监听文件变动
@@ -80,13 +77,9 @@ chokidar.watch(STATIC_PATH)
     }
   })
 
-router.prefix('/disk')
-
-router
-  .get('/', async (ctx, next) => {
-    ctx.body = 'disk'
-  })
-  .post('/dir', async (ctx, next) => {
+class DiskController {
+  // 目录内容
+  static async disk(ctx, next) {
     if (!ctx.state.userinfo) {
       ctx.body = {
         success: false,
@@ -95,17 +88,12 @@ router
       }
       return 
     } 
-    const body = ctx.request.body
-    if (typeof body.dir === "undefined") {
+    const { path = '.' } = ctx.request.query
+    console.log(path)
+    if (dir[path])  {
       ctx.body = {
         success: true,
-        data: dir['.'],
-        msg: "未指定查询参数[dir], 默认返回根目录数据",
-      }
-    } else if (dir[body.dir])  {
-      ctx.body = {
-        success: true,
-        data: dir[body.dir],
+        data: dir[path],
         msg: "获取成功",
       }
     } else {
@@ -115,6 +103,7 @@ router
         msg: "获取失败, 目录不存在",
       }
     }
-  })
+  }
+}
 
-module.exports = router
+module.exports = DiskController
