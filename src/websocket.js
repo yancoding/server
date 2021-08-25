@@ -12,6 +12,7 @@ const io = require('socket.io')(httpServer, {
 
 const { TOKEN_SECRET } = process.env
 
+// 连接map
 const socketMap = new Map()
 
 // 中间件 是否登录
@@ -35,9 +36,9 @@ io.on('connection', async socket => {
   // console.log({ ids })
 
   socket.on('disconnect', reason => {
-    io.emit('user_list_update', [ ...socketMap.values() ])
     socketMap.delete(socket.id)
-    // console.log('disconnect', reason)
+    io.emit('user_list_update', [ ...socketMap.values() ])
+    console.log('连接断开: ', reason)
   })
 
   socket.on('chat', (message, userId, callback) => {
