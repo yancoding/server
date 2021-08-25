@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { query, execute } = require('../mysql')
 
-const { TOKEN_EXPIRES } = process.env
+const { TOKEN_EXPIRES, TOKEN_SECRET } = process.env
 
 class RegisterController {
   // 用户注册
@@ -55,8 +55,8 @@ class RegisterController {
       const payload = {
         username
       }
-      const secret = 'my secret'
-      const token = jwt.sign(payload, secret, { expiresIn: TOKEN_EXPIRES })
+
+      const token = jwt.sign(payload, TOKEN_SECRET, { expiresIn: TOKEN_EXPIRES })
       ctx.body = {
         success: true,
         data: {

@@ -17,6 +17,7 @@ module.exports = {
 
         // token
         TOKEN_EXPIRES: '2d',
+        TOKEN_SECRET: 'good day',
 
         // static
         STATIC_PATH: '/usr/share/nginx/static',

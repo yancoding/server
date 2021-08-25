@@ -8,6 +8,7 @@ require('dotenv').config()
 const {
   API_PORT,
   WS_PORT,
+  TOKEN_SECRET,
 } = process.env
 
 // 路由
@@ -22,7 +23,7 @@ const app = new Koa()
 const getUserinfo = async token => {
   let userinfo = null
   try {
-    let { username } = await jwt.verify(token, 'my secret')
+    let { username } = await jwt.verify(token, TOKEN_SECRET)
     const rows = await query('SELECT * FROM `user` WHERE `username` = ?', [username])
     const { id, sex } = rows[0]
     userinfo = { id, username, sex }
@@ -45,5 +46,6 @@ app
     await next()
   })
   .use(router.routes(), router.allowedMethods())
+
 // 监听端口
 app.listen(API_PORT)
