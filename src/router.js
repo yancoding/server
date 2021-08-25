@@ -1,5 +1,6 @@
 const Router = require('@koa/router')
 const koaBody = require('koa-body')
+const indexCtrl = require('./controller/index')
 const fileCtrl = require('./controller/file')
 const diskCtrl = require('./controller/disk')
 const loginCtrl = require('./controller/login')
@@ -7,6 +8,9 @@ const userCtrl = require('./controller/user')
 const registerCtrl = require('./controller/register')
 
 const router = new Router()
+
+router
+  .get('/', indexCtrl.index)
 
 router
   .get('/file', fileCtrl.file)

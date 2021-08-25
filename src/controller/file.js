@@ -62,6 +62,13 @@ const getVideoDuration = filePath => {
 class FileController {
   // 获取文件
   static async file(ctx, next) {
+    if (!ctx.state.userinfo) {
+      return ctx.body = {
+        success: false,
+        data: null,
+        msg: '未登录',
+      }
+    }
     const { id: userId } = ctx.state.userinfo
     let { id: fileId, page = 1, size = 10 } = ctx.request.query
     page = Number(page)
