@@ -41,10 +41,17 @@ io.on('connection', async socket => {
     console.log('连接断开: ', reason)
   })
 
-  socket.on('chat', (message, userId, callback) => {
+  socket.on('chat', (userId, message, callback) => {
+    const user = socketMap.get(socket.id)
     if (typeof callback === 'function') {
       callback({
         success: true,
+        data: {
+          user,
+          date: Date.now(),
+          content: message,
+        },
+        msg: '发送成功',
       })
     }
   })
